@@ -17,26 +17,29 @@ par.nt=10;
 par.nplot = 75; % determines frequency of plotting (plots every nplot)
 par.nsave = 2; % determines frequency of saving in zMol output mat
 
+%% mask:
+
 % determine which type of mask to use
 % options are 0 -> static continental land_mask; 1 -> dynamic ocean_mask; 2 -> both
 par.which_mask = 2;
 
-
-%% mask:
 % grid resolution:
 par.ni=176;
 par.nj=176;
 
-% either use the continental maps given by pollard or .mat file
-fid=fopen('~/Programming/MSI-ICE-FLOW/Floating-ice-sheet-dynamics/Input/masks/630Ma_mask_x2.dat','r');
-mask=fscanf(fid,'%1d',[par.ni,par.nj]);
-par.land_mask=mask(:,:);
-fclose('all');
- 
-% or use a personalized continental mask created using make_continents.m
-% uncomment following lines to do so:
-% load Input/masks/continent.mat
-% par.land_mask = continent;
+% if land_mask is needed, use following code
+if par.which_mask == 0 || par.which_mask == 2
+    % either use the continental maps given by pollard or .mat file
+    fid=fopen('~/Programming/MSI-ICE-FLOW/Floating-ice-sheet-dynamics/Input/masks/630Ma_mask_x2.dat','r');
+    mask=fscanf(fid,'%1d',[par.ni,par.nj]);
+    par.land_mask=mask(:,:);
+    fclose('all');
 
-% or none
+    % or use a personalized continental mask created using make_continents.m
+    % uncomment following lines to do so:
+    % load Input/masks/continent.mat
+    % par.land_mask = continent;
 
+    % it can also be set to cover open ocean from GCM input
+    % just comment this whole section
+end
