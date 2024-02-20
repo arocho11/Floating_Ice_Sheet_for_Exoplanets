@@ -1,0 +1,89 @@
+From: David Pollard <pollard@essc.psu.edu>
+To: Eli Tziperman <eli@seas.harvard.edu>
+CC: <abbot@uchicago.edu>
+Subject: Re: Pollard and Kasting 2005 P-E+basal melt/freeze
+Date: Tue, 23 Aug 2011 17:39:34 -0400
+
+Basal (and internal, if any) melting/freezing is included
+in the other curve, which is "dhb" in the file (and is non-zero...?).
+
+Dave.
+------------------------------------------------------------------------
+From: David Pollard <pollard@essc.psu.edu>
+To: Eli Tziperman <eli@seas.harvard.edu>
+CC: Dorian Abbot <abbot@uchicago.edu>
+Subject: Re: Pollard and Kasting 2005 P-E+basal melt/freeze
+Date: Tue, 23 Aug 2011 10:28:07 -0400
+
+Hi Eli and Dorian,
+
+Luckily, a grad student of Jim Kasting here has begun to use my 2005 code, 
+and we recently repeated the 4 runs in that paper. So it's easy for me to 
+send you the data.
+
+However, the data file format is quite grungy. It's attached, for Fig. 4 
+dotted lines (i.e., with sea glaciers, bubbly ice, omega_0 = 0.999). 
+The file is ascii. Each variable has a header line followed by a data line,
+with data values running from 89N, 87N, ... to 89S.
+All variables for a given time slice are printed together, with a time slice
+every 1000 years. I've extracted just the last time slice, for year 400000. 
+The model has essentially equilibrated by then.
+
+Find the header "pme(mm/a) :" 
+The next line are P-E values, Fig. 4c dashed,  89N to 89S (hemis. symmetric).
+About 30 lines below, find  "dhb(mm/a) :".
+The next line should be the dashed line in Fig. 4d (basal/interior melt/freeze).
+
+Any questions welcome. As you may know, I'll be at the PALSEA workshop 
+this Thursday to Saturday - so we can perhaps chat then.
+
+I thought about extending the sea glacier model to 2-D, several years ago.
+For 1-D, or Cartesian or Polar Stereographic grids, the dynamical ice-shelf 
+equations for u and v are straightforward, i.e., the MacAyeal/Morland SSA 
+vertically averaged flow equations. But re-formulating those equations 
+and their derivation to Spherical Polars, as neeed for a 2-D global or 
+hemispheric spherical domain, was very non-trivial for me (involving tensors). 
+Even though in principle it just requires coordinate transformations, 
+I never quite got a final set of equations I was happy with! 
+Shawn Marshall, in an appendix of his PhD thesis, claims to have done it, 
+but I think his derivation and equations are incorrect (they don't satisy 
+basic kinematic constraints). We talked about it at the time, and Shawn 
+agreed it could be wrong. 
+
+I don't know if you're looking at cartesian or spherical coords - if the 
+latter, I'd be interested in your approach.
+
+David.
+
+On Tue, Aug 23, 2011 at 09:33:59AM -0400, Eli Tziperman wrote:
+> From: Eli Tziperman <eli@seas.harvard.edu>
+> Date: Tue, 23 Aug 2011 09:33:59 -0400
+> To: David Pollard <pollard@essc.psu.edu>
+> CC: Dorian Abbot <abbot@uchicago.edu>
+> Subject: Pollard and Kasting 2005 P-E+basal melt/freeze
+> 
+Content-Description: message body text
+> Hi David, we've been looking into extending the "sea glacier" models
+> to two horizontal dimensions (attached preliminary figure).  I was
+> wondering if it might be possible to obtain the values of your "bubbly
+> ice" forcing, basically the dash lines in figures 4c and 4d in your
+> 2005 paper?  We would then use these as the forcing in our 2d runs...
+> We are interested in concentrating on the flow feedback only, without
+> the radiation, dust etc, at this point.  I know it's been a long time,
+> so would totally understand if you just don't have those results
+> available anymore, thanks in any case!  Cheers, Eli
+> 
+
+
+
+-- 
+-----
+David Pollard                              pollard@essc.psu.edu
+Pennsylvania State University
+EMS Earth and Environmental Systems Institute
+2217 Earth-Engineering Sciences Building   tel: +1 814 865 2022  
+University Park, PA 16802-6813             fax: +1 814 865 3191 
+-----
+
+----------------------------------------------------------------------
+[Deleted fort.21_4_999 (text/plain)]
