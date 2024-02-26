@@ -8,11 +8,12 @@ par.T_surface_profile_type='mine'; % options are mine, cold, warm
 par.S_filename='~/Programming/MSI-ICE-FLOW/Floating-ice-sheet-dynamics/Input/Pollard/pollard_forcing_interpolated_nj=176.mat';
 par.GCM_input = '~/Programming/MSI-ICE-FLOW/Floating-ice-sheet-dynamics/Input/GCM_output/surface_icedyn.001.nc';
 
-% (to be edited) option to name the output file 
-% par.GCM_filename = '';
+% Name the output files (extension .nc)
+par.output_filename = 'Output.nc';
+par.GCM_filename = 'GCM_input.nc'; % file with output in compatible GCM format
 
 par.dt=0.05e1*par.year; % x years to seconds
-par.nt=10; 
+par.nt=3; 
 
 par.nplot = 75; % determines frequency of plotting (plots every nplot)
 par.nsave = 2; % determines frequency of saving in zMol output mat

@@ -516,7 +516,7 @@ for n=1:par.nt
     end
    end % plotting
 
-   %% Write restart
+   % Write restart
    if n==par.nt || floor(n/par.nwrite_restart)*par.nwrite_restart==n
        save(sprintf('Restart/restart-exp-%2.2d-2d-sphere-nonlinear.mat',par.expnum),'h','u_n','v_n','mask','B');
    end
@@ -544,26 +544,38 @@ for n=1:par.nt
   
   % create all variable fields
   s = size(mat_Z);
-  nccreate('Output.nc','lon','Dimensions',{'lon' 176});
-  nccreate('Output.nc','lat','Dimensions',{'lat' 176});
-  nccreate('Output.nc','time','Dimensions',{'time' s(3)});
-  nccreate('Output.nc','zMol','Dimensions',{'lon' 176 'lat' 176 'time' s(3)});
-  nccreate('Output.nc','U_veloc','Dimensions',{'lon' 176 'lat' 176 'time' s(3)});
-  nccreate('Output.nc','V_veloc','Dimensions',{'lon' 176 'lat' 176 'time' s(3)});
-  nccreate('Output.nc','viscosity','Dimensions',{'lon' 176 'lat' 176 'time' s(3)});
-
-  ncwrite('Output.nc','zMol',mat_Z);
-  ncwrite('Output.nc','U_veloc',mat_U);
-  ncwrite('Output.nc','V_veloc',mat_V);
-  ncwrite('Output.nc','viscosity',mat_B);
-
-  % create all variable fields
-  % doesnt include albedo and thermal...
-  nccreate('GCM_input.nc','lon','Dimensions',{'lon' 360});
-  nccreate('GCM_input.nc','lat','Dimensions',{'lat' 180});
-  nccreate('GCM_input.nc','tsurf','Dimensions',{'lon' 360 'lat' 180}); % doesnt vary with time in model run
-  nccreate('GCM_input.nc','zMOL','Dimensions',{'lon' 360 'lat' 180});
+  while isfile(par.output_filename)
+      str = split(par.output_filename, ".");
+      par.output_filename = strcat(str(1),'copy.',str(2));
+      par.output_filename = string(par.output_filename);
+  end
+  nccreate(par.output_filename,'lon','Dimensions',{'lon' 176});
+  nccreate(par.output_filename,'lat','Dimensions',{'lat' 176});
+  nccreate(par.output_filename,'time','Dimensions',{'time' s(3)});
+  nccreate(par.output_filename,'zMol','Dimensions',{'lon' 176 'lat' 176 'time' s(3)});
+  nccreate(par.output_filename,'U_veloc','Dimensions',{'lon' 176 'lat' 176 'time' s(3)});
+  nccreate(par.output_filename,'V_veloc','Dimensions',{'lon' 176 'lat' 176 'time' s(3)});
+  nccreate(par.output_filename,'viscosity','Dimensions',{'lon' 176 'lat' 176 'time' s(3)});
   
+  ncwrite(par.output_filename,'zMol',mat_Z);
+  ncwrite(par.output_filename,'U_veloc',mat_U);
+  ncwrite(par.output_filename,'V_veloc',mat_V);
+  ncwrite(par.output_filename,'viscosity',mat_B);
+  
+  % create all variable fields for the file in compatible format for GCM
+  % doesnt include albedo and thermal...
+  
+  while isfile(par.GCM_filename)
+      str = split(par.GCM_filename, ".");
+      par.par.GCM_filename = strcat(str(1),'copy.',str(2));
+      par.par.GCM_filename = string(par.GCM_filename);
+  end
+
+  nccreate(par.GCM_filename,'lon','Dimensions',{'lon' 360});
+  nccreate(par.GCM_filename,'lat','Dimensions',{'lat' 180});
+  nccreate(par.GCM_filename,'tsurf','Dimensions',{'lon' 360 'lat' 180}); % doesnt vary with time in model run
+  nccreate(par.GCM_filename,'zMOL','Dimensions',{'lon' 360 'lat' 180});
+
   % interpolated to GCM dim
   Xq = linspace(1,360, 360);
   Yq = linspace(1,180, 180)';
@@ -572,10 +584,9 @@ for n=1:par.nt
   zMol = (Z/1000) - par.minZ; % might need a way to handle NaN here
   zMol = interp2(Y_174, X, zMol,Yq,Xq);
   tsurf = interp2(Y_176, par.phi, TS,Yq,Xq);
-
-  ncwrite('GCM_input.nc','tsurf',tsurf);
-  ncwrite('GCM_input.nc','zMOL',zMol);
- 
+  
+  ncwrite(par.GCM_filename,'tsurf',tsurf);
+  ncwrite(par.GCM_filename,'zMOL',zMol);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -804,17 +815,14 @@ if nnz(A)>=nzmax
   pause
 end
 
-if 0
-  figure(54); clf
-  fprintf(1,'function solve_uv_2d_matrix_form: plotting A, N & RHS...');
-  subplot(2,2,1); imagesc(A(1:neqns,1:neqns)/max(max(A))); title('A'); colorbar;
-  subplot(2,2,2); imagesc(squeeze(N(:,:,1)'))/max(max(max(N(:,:,1)))); title('N(:,:,1)'); colorbar;
-  subplot(2,2,3); imagesc(squeeze(N(:,:,2)'))/max(max(max(N(:,:,2)))); title('N(:,:,2)'); colorbar;
-  subplot(2,2,4); plot(RHS); title('RHS');
-  fprintf(1,' done.\n');
-  pause
-end
-
+% figure(54); clf
+% fprintf(1,'function solve_uv_2d_matrix_form: plotting A, N & RHS...');
+% subplot(2,2,1); imagesc(A(1:neqns,1:neqns)/max(max(A))); title('A'); colorbar;
+% subplot(2,2,2); imagesc(squeeze(N(:,:,1)'))/max(max(max(N(:,:,1)))); title('N(:,:,1)'); colorbar;
+% subplot(2,2,3); imagesc(squeeze(N(:,:,2)'))/max(max(max(N(:,:,2)))); title('N(:,:,2)'); colorbar;
+% subplot(2,2,4); plot(RHS); title('RHS');
+% fprintf(1,' done.\n');
+% pause
 
 % x = A\B is a solution to the equation A*x = B, if it exists. for x=UV
 ind = ~any(A~=0, 2);
