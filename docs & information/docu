@@ -1,0 +1,88 @@
+This is documentation for the matlab file Floating_ice_sheets.m
+
+
+MISC NOTES
+- The functions are defined without an END statement
+- par.S_filename is defined in set_parameters, modify path/to/file to avoid errors when running S_total
+- Optimization Toolbox is required to run code
+
+FUNCTIONS
+
+set_parameters
+---------------------
+input: .m file
+output: returns an object par
+Takes as input the experiment number which is a file where the following params are defined:
+	par.model_to_run='2d-sphere';
+	par.linearized_model=0;
+	par.T_surface_profile_type='warm';
+Defines all param of the modeled object.
+Applies land mask if applicable and tests consistency.
+Defines the limits of the physical domain and converts everything in spherical coords.
+
+
+
+read_restart
+---------------------
+input: par object, which_restart: 
+	'goodman', 'goodman-linear', '1d-nonlinear', '1d-linear', '2d-sphere-linear', '2d-sphere-nonlinear'
+output: params
+Checks if there is a restart file to loop through the scenario multiple times and use the output param of the previous run as the input param of the next one.
+Sets the previous params as current param if a restart file has been created.
+
+
+THREE MODELS
+
+integrate_h_goodman
+---------------------
+
+integrate_h_2d_sphere
+---------------------
+helper functions:
+	solve_uv_2d_matrix_form_sphere
+	S_total
+	S_bot
+	T_surface_function
+
+integrate_h_1d_sphere
+---------------------
+helper functions:
+	calc_eff_viscosity_1d_sphere
+	TDMAsolver
+	solve_v_1d_matrix_form_sphere
+	T_surface_function
+
+plot_glen_constants
+---------------------
+helper functions:
+	A_g
+	A_p_k
+	A_b
+
+DYNAMIC OCEAN MASK
+---------------------
+initializes the landmask:
+% par.land_mask(newZ<100) = 0;
+
+reducing the cutoff doesnt work for larger time incrementations
+% par.land_mask(newZ<10) = 0;
+0.05e1*par.year; works but 0.5e1*par.year; fails at the first iteration
+
+so if it moves more than 10m per incrementation (happens esp at first iterations its very fast), a neg value of h is found → crashes
+
+GCM input for ice elevation includes 0m at substellar pt
+
+viscosity initialized by: 
+% B=ones(par.ni,par.nj)*1e16*par.zMol/par.R;
+zMol has values of 0m at substellar point so some values of b are set to 0 
+
+LINEARIZED MODEL
+---------------------
+B(i,j)=(h(i,j)/par.R)*mean(AA)*par.shear_factor; 
+viscosity vertically averaged linearized model calculates viscosity using an 
+arbitrary shear stress parameter instead of calculating the whole matrix
+
+
+
+
+
