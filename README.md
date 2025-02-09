@@ -13,4 +13,4 @@ set_parameters.m is used to create the par structure and is called in Floating_i
 Parameters are saved at the end of each run from Floating_ice_sheets.m and saved under /Restart in a .mat file.
 Figures generated in Floating_ice_sheets.m are saved under /Figures as PDF. The frequency of plotting at different timesteps is defined in the exp_00.m file.
 
-An in-depth description of how to use the model canbe found under Docs & information.
+An in-depth description of how to use the model can be found under docs & information.
